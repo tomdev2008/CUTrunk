@@ -1,0 +1,10 @@
+{
+    "type": "chaseGirl",
+    "list": [
+             {"image": "blueArrow.png", "text": "论坛", "details": "HAHA"},
+             {"image": "buleArrow.png", "text": "资料", "details": "HAHA"},
+             {"image": "buleArrow.png", "text": "推荐", "details": "HAHA"},
+             {"image": "buleArrow.png", "text": "约会灌水", "details": "HAHA"},
+             {"image": "buleArrow.png", "text": "新手导航", "details": "HAHA"}
+    ]
+}

@@ -1,0 +1,295 @@
+//
+//  AMRObject.m
+//  Lebo-NonArc
+//
+//  Created by lebo on 13-8-12.
+//  Copyright (c) 2013年 sam. All rights reserved.
+//
+
+#import "AMRObject.h"
+
+@implementation AMRObject
+@synthesize recorderVC,convertAmr,convertWav,originWav;
+@synthesize amrObjectDelegate;
+@synthesize audioTime;
+
+static AMRObject *amrObject = nil;
+
++(id)shareInstance{
+    if (!amrObject) {
+        amrObject = [[AMRObject alloc] init];
+    }
+    
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+     //默认情况下扬声器播放
+     [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
+     [audioSession setActive:YES error:nil];
+    
+    [amrObject instanceVoiceRecoder];
+    
+    
+
+//    [[UIDevice currentDevice] setProximityMonitoringEnabled:YES]; //建议在播放之前设置yes，播放结束设置NO，这个功能是开启红外感应
+    [[NSNotificationCenter defaultCenter] removeObserver:amrObject name:@"UIDeviceProximityStateDidChangeNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:amrObject selector:@selector(sensorStateChange:) name:@"UIDeviceProximityStateDidChangeNotification" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:amrObject selector:@selector(enterBackGround:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
+    return amrObject;
+}
+
++ (void)changeSession:(BOOL)enabled{
+//   [[NSNotificationCenter defaultCenter] removeObserver:amrObject name:@"UIDeviceProximityStateDidChangeNotification" object:nil];
+    [[UIDevice currentDevice] setProximityMonitoringEnabled:enabled]; //建议在播放之前设置yes，播放结束设置NO，这个功能是开启红外感应
+    if (!enabled) {
+        [[NSNotificationCenter defaultCenter] removeObserver:amrObject name:@"UIDeviceProximityStateDidChangeNotification" object:nil];
+    }
+
+}
+
+//处理监听触发事件
+-(void)sensorStateChange:(NSNotificationCenter *)notification;
+{
+    //如果此时手机靠近面部放在耳朵旁，那么声音将通过听筒输出，并将屏幕变暗（省电啊）
+    if ([[UIDevice currentDevice] proximityState] == YES)
+    {
+        NSLog(@"Device is close to user");
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+        
+    }
+    else
+    {
+        NSLog(@"Device is not close to user");
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+    }
+}
+
+- (void)enterBackGround:(NSNotification *)info{
+    [self stopAudioPlay];
+    [self endVoiceRecorderIsNeedSend:NO];
+}
+
+- (void)instanceVoiceRecoder{
+    //初始化录音vc
+    if (!self.recorderVC) {
+        self.recorderVC = [[ChatVoiceRecorderVC alloc]init];
+    }
+    
+    if (!player) {
+        player = [[AVAudioPlayer alloc] init];
+    }
+//
+    self.recorderVC.vrbDelegate = self;
+}
+
+// 开始录制声音
+- (void)startVoiceRecorderTarget:(id)target{
+    if (havePlayed) {
+        if ([player isPlaying]) {
+            [player stop];
+            havePlayed = NO;
+        }
+    }
+
+    //设置文件名
+    self.amrObjectDelegate = target;
+    self.originWav = [VoiceRecorderBaseVC getCurrentTimeString];
+    //开始录音
+    [self.recorderVC beginRecordByFileName:self.originWav];
+}
+
+// 结束录制声音
+- (void)endVoiceRecorderIsNeedSend:(BOOL)needSend{
+     [self.recorderVC endRecoder];
+    
+    if (amrObjectDelegate && [amrObjectDelegate respondsToSelector:@selector(audioPlayerFinished)]) {
+        [amrObjectDelegate performSelector:@selector(audioPlayerFinished)];
+    }
+    
+    player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:[VoiceRecorderBaseVC getPathByFileName:self.originWav ofType:@"wav"]] error:nil];
+    self.audioTime = (int)player.duration;
+    player.volume = 1.0f;
+    if (self.audioTime < 1) {
+        self.audioTime = 1;
+    }
+    
+    if (needSend == NO) {
+        return;
+    }
+       
+    [self changeWavToAmr];
+}
+
+#pragma mark - 播放原wav
+- (void)playOriginWav{
+    if (self.originWav.length > 0) {
+        
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+      BOOL exist =  [fileManager fileExistsAtPath:[VoiceRecorderBaseVC getPathByFileName:self.originWav ofType:@"wav"]];
+        if (exist) {
+            player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:[VoiceRecorderBaseVC getPathByFileName:self.originWav ofType:@"wav"]] error:nil] ;
+            player.volume = 1.0f;
+            [player play];
+        }
+       
+    }
+}
+
+#pragma mark - wav转amr
+- (void)changeWavToAmr{
+    if (self.originWav.length > 0){
+        self.convertAmr = [self.originWav stringByAppendingString:@"wavToAmr"];
+        
+        //转格式
+        [VoiceConverter wavToAmr:[VoiceRecorderBaseVC getPathByFileName:self.originWav ofType:@"wav"] amrSavePath:[VoiceRecorderBaseVC getPathByFileName:self.convertAmr ofType:@"amr"]];
+        
+        if ([self.amrObjectDelegate respondsToSelector:@selector(recoderFinishedFileName:baseFilePath:)]) {
+            [self.amrObjectDelegate recoderFinishedFileName:self.convertAmr baseFilePath:[VoiceRecorderBaseVC getCacheDirectory]];
+            
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSError *error = nil;
+            [fileManager moveItemAtPath:[VoiceRecorderBaseVC getPathByFileName:self.originWav ofType:@"wav"] toPath:[VoiceRecorderBaseVC getAudioPathByFileName:self.originWav ofType:@"wav"] error:&error];
+        }
+        
+    }
+}
+
+#pragma mark - amr转wav
+- (void)changeAmrToWav{
+    if (convertAmr.length > 0){
+        self.convertWav = [originWav stringByAppendingString:@"amrToWav"];
+        
+        //转格式
+        [VoiceConverter amrToWav:[VoiceRecorderBaseVC getPathByFileName:convertAmr ofType:@"amr"] wavSavePath:[VoiceRecorderBaseVC getPathByFileName:convertWav ofType:@"wav"]];
+    }
+}
+
+- (void)changeAmrToWav:(NSString *)armFilePath savePath:(NSString *)wavPath{
+    if (armFilePath.length > 0){
+        
+        //转格式
+        [VoiceConverter amrToWav:armFilePath wavSavePath:wavPath];
+    }
+}
+
+#pragma mark - 播放转换后wav
+- (void)playConvertWav{
+    if (convertWav.length > 0){
+       player = [[[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:[VoiceRecorderBaseVC getPathByFileName:convertWav ofType:@"wav"]] error:nil] autorelease];
+        player.volume = 1.0f;
+        [player play];
+    }
+}
+
+
+- (void)playConvertWavFilePath:(NSString *)filePathWavName{
+    
+    if (filePathWavName.length > 0){
+        [self stopAudioPlay];
+        player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:filePathWavName] error:nil] ;
+        player.delegate = amrObject;
+        player.volume = 1.0f;
+        [player play];
+        havePlayed = YES;
+        [AMRObject  changeSession:YES];
+    }
+}
+
+#pragma mark - 暂停播放
+- (void)pauseAudioPlay{
+    [player pause];
+    [AMRObject  changeSession:NO];
+}
+
+
+#pragma mark - 停止声音播放
+- (void)stopAudioPlay{
+    if (havePlayed) {
+        if (player && player.isPlaying) {
+            [player stop];
+        }
+        havePlayed = NO;
+    }
+    [AMRObject  changeSession:NO];
+    
+}
+
+- (void)audioPlayerFinishedOrInterruption{
+    [self stopAudioPlay];
+    if (amrObjectDelegate && [amrObjectDelegate respondsToSelector:@selector(audioPlayerFinished)]) {
+        [amrObjectDelegate performSelector:@selector(audioPlayerFinished)];
+    }
+}
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
+{
+    [AMRObject  changeSession:NO];
+    [self audioPlayerFinishedOrInterruption];
+}
+
+- (void)audioPlayerBeginInterruption:(AVAudioPlayer *)player{
+    NSLog(@"中断");
+}
+
+- (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error{
+    NSLog(@"error  %@", error);
+}
+
+#pragma mark - VoiceRecorderBaseVC Delegate Methods
+//录音完成回调，返回文件路径和文件名
+- (void)VoiceRecorderBaseVCRecordFinish:(NSString *)_filePath fileName:(NSString*)_fileName{
+    NSLog(@"录音完成，文件路径:%@",_filePath);
+    //AMRObject
+}
+
+#pragma mark - 获取文件大小
+- (NSInteger) getFileSize:(NSString*) path{
+    NSFileManager * filemanager = [[[NSFileManager alloc]init] autorelease];
+    if([filemanager fileExistsAtPath:path]){
+        NSDictionary * attributes = [filemanager attributesOfItemAtPath:path error:nil];
+        NSNumber *theFileSize;
+        if ( (theFileSize = [attributes objectForKey:NSFileSize]) )
+            return  [theFileSize intValue];
+        else
+            return -1;
+    }
+    else{
+        return -1;
+    }
+}
+
+- (void)deleteAllAudio{
+    NSString *cacheStr = [VoiceRecorderBaseVC getCacheDirectory];
+    [VoiceRecorderBaseVC deleteFileAtPath:cacheStr];
+}
+
+- (void)deleteAudioName:(NSString *)fileName{
+    NSString *cacheStr = [VoiceRecorderBaseVC getPathByFileName:fileName];
+    [VoiceRecorderBaseVC deleteFileAtPath:cacheStr];
+}
+
+- (BOOL)checkExistAudioName:(NSString *)fileName{
+    NSString *cacheStr = [VoiceRecorderBaseVC getPathByFileName:fileName];
+   return [VoiceRecorderBaseVC fileExistsAtPath:cacheStr];
+}
+
+- (void)playAudioName:(NSString *)fileName{
+    if ([self checkExistAudioName:fileName]) {
+        player = [[[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:[VoiceRecorderBaseVC getPathByFileName:fileName]] error:nil] autorelease];
+        player.volume = 1.0f;
+        [player play];
+    }
+}
+
+
+
+ 
+- (void)dealloc{
+    [super dealloc];
+    self.recorderVC = nil;
+    self.originWav = nil;
+    self.convertWav = nil;
+    self.convertAmr = nil;
+}
+
+@end

@@ -1,0 +1,76 @@
+//
+//  AMRObject.h
+//  Lebo-NonArc
+//
+//  Created by lebo on 13-8-12.
+//  Copyright (c) 2013年 sam. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "ChatVoiceRecorderVC.h"
+#import "VoiceRecorderBaseVC.h"
+#import "VoiceConverter.h"
+
+@protocol AMRObjectDelegate <NSObject>
+
+@optional
+- (void)recoderFinishedFileName:(NSString *)fileName baseFilePath:(NSString *)basePath;
+- (void)audioPlayerFinished;
+
+@end
+
+@interface AMRObject : NSObject<VoiceRecorderBaseVCDelegate , AMRObjectDelegate ,AVAudioPlayerDelegate>{
+    AVAudioPlayer  *player;
+    BOOL        havePlayed;
+}
+@property (retain, nonatomic)  ChatVoiceRecorderVC *recorderVC;
+@property (nonatomic, retain)  id amrObjectDelegate;
+
+@property (copy, nonatomic)     NSString    *originWav;     //原wav文件名
+@property (copy, nonatomic)     NSString    *convertAmr;    //转换后的amr文件名
+@property (copy, nonatomic)     NSString    *convertWav;    //amr转wav的文件名
+@property (assign, nonatomic)   int         audioTime;      // 录完后时长
+@property (assign, nonatomic)   BOOL        havePlayed;
+@property (assign, nonatomic)   BOOL        canPlay;
+
++(id)shareInstance;
++ (void)changeSession:(BOOL)enabled;
+
+// 开始录音
+- (void)startVoiceRecorderTarget:(id)target;
+// 结束录音
+- (void)endVoiceRecorderIsNeedSend:(BOOL)needSend;
+// 回调以使恢复原先状态
+- (void)audioPlayerFinishedOrInterruption;;
+// 播放初始声音
+- (void)playOriginWav;
+// 暂停声音
+- (void)pauseAudioPlay;
+// 停止声音
+- (void)stopAudioPlay;
+// 把wav 格式转换到amr 格式
+- (void)changeWavToAmr;
+// 把amr 格式转换为wav 格式
+- (void)changeAmrToWav;
+// 把amr 格式转换为wav 格式  保存到目标位置
+- (void)changeAmrToWav:(NSString *)armFilePath savePath:(NSString *)wavPath;
+// 播放转换后的wav 格式
+- (void)playConvertWav;
+// 播放wav 本地文件
+- (void)playConvertWavFilePath:(NSString *)filePathWavName;
+// 暂停声音播放
+- (void)pauseAudioPlay;
+// 停止播放的声音
+- (void)stopAudioPlay;
+
+// 删除所有的录音
+- (void)deleteAllAudio;
+// 删除某个录音   params fileName 声音名
+- (void)deleteAudioName:(NSString *)fileName;
+
+// 查看文件是否存在
+- (BOOL)checkExistAudioName:(NSString *)fileName;
+// 播放文件声音
+- (void)playAudioName:(NSString *)fileName;
+
+@end
