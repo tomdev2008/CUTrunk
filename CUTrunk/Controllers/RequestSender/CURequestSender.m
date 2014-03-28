@@ -99,6 +99,7 @@ static const float TIME_OUT_INTERVAL = 30.0f;
  
     
     [request setHTTPMethod:usePost?@"POST":@"GET"];
+    [request setValue:@"gzip" forHTTPHeaderField:@"Accept-Encoding"];
     if(usePost)
     {
         [request setHTTPBody:[queryStr dataUsingEncoding:NSUTF8StringEncoding]];
