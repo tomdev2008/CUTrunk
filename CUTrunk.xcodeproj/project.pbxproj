@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C0CB53B18E56CFB0046DDBF /* CUMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C0CB53A18E56CFB0046DDBF /* CUMessageViewController.m */; };
+		3C0CB53F18E56D4C0046DDBF /* CUAddressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C0CB53E18E56D4C0046DDBF /* CUAddressViewController.m */; };
 		3CB8696E18DFD029008B534D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CB8696D18DFD029008B534D /* Foundation.framework */; };
 		3CB8697018DFD029008B534D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CB8696F18DFD029008B534D /* CoreGraphics.framework */; };
 		3CB8697218DFD029008B534D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CB8697118DFD029008B534D /* UIKit.framework */; };
@@ -133,6 +135,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3C0CB53918E56CFB0046DDBF /* CUMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUMessageViewController.h; sourceTree = "<group>"; };
+		3C0CB53A18E56CFB0046DDBF /* CUMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CUMessageViewController.m; sourceTree = "<group>"; };
+		3C0CB53D18E56D4C0046DDBF /* CUAddressViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAddressViewController.h; sourceTree = "<group>"; };
+		3C0CB53E18E56D4C0046DDBF /* CUAddressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CUAddressViewController.m; sourceTree = "<group>"; };
 		3CB8696A18DFD029008B534D /* CUTrunk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CUTrunk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CB8696D18DFD029008B534D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		3CB8696F18DFD029008B534D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -381,6 +387,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3C0CB53818E56CDE0046DDBF /* MessageViewController */ = {
+			isa = PBXGroup;
+			children = (
+				3C0CB53918E56CFB0046DDBF /* CUMessageViewController.h */,
+				3C0CB53A18E56CFB0046DDBF /* CUMessageViewController.m */,
+			);
+			path = MessageViewController;
+			sourceTree = "<group>";
+		};
+		3C0CB53C18E56D3C0046DDBF /* AddressViewController */ = {
+			isa = PBXGroup;
+			children = (
+				3C0CB53D18E56D4C0046DDBF /* CUAddressViewController.h */,
+				3C0CB53E18E56D4C0046DDBF /* CUAddressViewController.m */,
+			);
+			path = AddressViewController;
+			sourceTree = "<group>";
+		};
 		3CB8696118DFD029008B534D = {
 			isa = PBXGroup;
 			children = (
@@ -497,6 +521,8 @@
 		3CB869B518DFD071008B534D /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				3C0CB53C18E56D3C0046DDBF /* AddressViewController */,
+				3C0CB53818E56CDE0046DDBF /* MessageViewController */,
 				3CB869B918DFD071008B534D /* DetailsViewController */,
 				3CB869BD18DFD071008B534D /* FindViewController */,
 				3CB869C018DFD071008B534D /* HomeViewController */,
@@ -1072,6 +1098,7 @@
 				3CB86AB418DFD071008B534D /* AFDownloadRequestOperation.m in Sources */,
 				3CB86AAC18DFD071008B534D /* CUSettingViewController.m in Sources */,
 				3CB86AC318DFD071008B534D /* SBJsonStreamParser.m in Sources */,
+				3C0CB53F18E56D4C0046DDBF /* CUAddressViewController.m in Sources */,
 				3CB86AF418DFD071008B534D /* UIImage+MultiFormat.m in Sources */,
 				3CB86AAB18DFD071008B534D /* CURecommendViewController.m in Sources */,
 				3CB86A9B18DFD071008B534D /* CUModelApiViewController.m in Sources */,
@@ -1093,6 +1120,7 @@
 				3CB86ABD18DFD071008B534D /* Colours.m in Sources */,
 				3CB86AEF18DFD071008B534D /* SDWebImageDownloaderOperation.m in Sources */,
 				3CB86AE718DFD071008B534D /* Global.m in Sources */,
+				3C0CB53B18E56CFB0046DDBF /* CUMessageViewController.m in Sources */,
 				3CB86AC718DFD071008B534D /* SBJsonStreamWriter.m in Sources */,
 				3CB86AAD18DFD071008B534D /* JMStaticContentTableViewCell.m in Sources */,
 				3CB86ADB18DFD071008B534D /* UIFont+Addtion.m in Sources */,
@@ -1318,6 +1346,7 @@
 				3CB8699818DFD029008B534D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3CB8699918DFD029008B534D /* Build configuration list for PBXNativeTarget "CUTrunkTests" */ = {
 			isa = XCConfigurationList;
@@ -1326,6 +1355,7 @@
 				3CB8699B18DFD029008B534D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

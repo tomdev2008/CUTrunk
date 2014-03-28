@@ -13,10 +13,11 @@
 
 typedef enum
 {
-    API_HOME_LIST,               //收藏
-    API_FIND_LIST,               //发现
+    API_HOME_LIST,               //附近
+    API_FIND_LIST,               //
     API_RECOMEND_LIST,           //推荐
     API_NOTIFICATION_LIST,       //通知
+    API_MESSAGE_LIST,       //私信
 
 }API_GET_TYPE;
 

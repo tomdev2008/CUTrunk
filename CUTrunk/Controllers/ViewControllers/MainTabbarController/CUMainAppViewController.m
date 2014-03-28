@@ -40,9 +40,11 @@
     [self setDelegate:self];
     
     self.viewControllers = [NSArray arrayWithObjects:
-                            [self viewControllerWithTabTitle:@"首页" image:[UIImage imageNamed:@"TabBarIconChatsOff"] finishedSelectedImage:[UIImage imageNamed:@"TabBarIconChatsOn"] viewClass:@"HNHomeViewController"],
-                            [self viewControllerWithTabTitle:@"发现" image:[UIImage imageNamed:@"tabbar_find.png"]  finishedSelectedImage:[UIImage imageNamed:@"tabbar_find_tape.png"] viewClass:@"HNFindViewController"],
-                            [self viewControllerWithTabTitle:@"我" image:[UIImage imageNamed:@"tabBarContactsIcon"] finishedSelectedImage:[UIImage imageNamed:@"tabBarContactsIcon"]  viewClass:@"HNPersonalViewController"],
+                            [self viewControllerWithTabTitle:@"交友" image:[UIImage imageNamed:@"TabBarIconChatsOff"] finishedSelectedImage:[UIImage imageNamed:@"TabBarIconChatsOn"] viewClass:@"CUHomeViewController"],
+                              [self viewControllerWithTabTitle:@"私信" image:[UIImage imageNamed:@"TabBarIconChatsOff"] finishedSelectedImage:[UIImage imageNamed:@"TabBarIconChatsOn"] viewClass:@"CUMessageViewController"],
+                              [self viewControllerWithTabTitle:@"通讯录" image:[UIImage imageNamed:@"TabBarIconChatsOff"] finishedSelectedImage:[UIImage imageNamed:@"TabBarIconChatsOn"] viewClass:@"CUAddressViewController"],
+                            [self viewControllerWithTabTitle:@"看点" image:[UIImage imageNamed:@"tabbar_find.png"]  finishedSelectedImage:[UIImage imageNamed:@"tabbar_find_tape.png"] viewClass:@"CUFindViewController"],
+                            [self viewControllerWithTabTitle:@"我" image:[UIImage imageNamed:@"tabBarContactsIcon"] finishedSelectedImage:[UIImage imageNamed:@"tabBarContactsIcon"]  viewClass:@"CUPersonalViewController"],
                             nil];
 
     [self.tabBar setSelectionIndicatorImage:[[UIImage imageNamed:@"emptyIndicator.png"] stretchableImageWithLeftCapWidth:22 topCapHeight:22]];
