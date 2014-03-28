@@ -218,7 +218,7 @@
     if (alertView.tag == 1024) {
         if (buttonIndex == 1) {
             //do logout
-            [[CUFileClient sharedInstance] logoutWithCachePolicy:NSURLRequestUseProtocolCachePolicy
+            [[CUFileClient sharedInstance] logoutByUserTicket:NSURLRequestUseProtocolCachePolicy
                                                         delegate:self
                                                         selector:@selector(logoutDone:)
                                                    selectorError:@selector(logoutError:)];

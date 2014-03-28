@@ -27,46 +27,51 @@
  * token，腾讯返回的token
  * login_type，登录类型
  */
-- (void)loginByTencentOpenID:(NSString*)openid qq_token:(NSString*)qq_token device_id:(NSString *)device_id cachePolicy:(NSURLRequestCachePolicy)cholicy  delegate:(id)theDelegate selector:(SEL)theSelector selectorError:(SEL)theSelectorError;
+- (void)loginUserSystem:(NSString*)email password:(NSString*)password cachePolicy:(NSURLRequestCachePolicy)cholicy  delegate:(id)theDelegate selector:(SEL)theSelector selectorError:(SEL)theSelectorError;
+
+/**
+ * API:用户注册
+ *
+ * ticket
+ */
+- (void)registerUserSystem:(NSString*)email password:(NSString*)password username:(NSString*)username description:(NSString*)description cachePolicy:(NSURLRequestCachePolicy)cholicy  delegate:(id)theDelegate selector:(SEL)theSelector selectorError:(SEL)theSelectorError;
 
 /**
  * API:退出登录
  *
- * token
+ * ticket
  */
-- (void)logoutWithCachePolicy:(NSURLRequestCachePolicy)cholicy  delegate:(id)theDelegate selector:(SEL)theSelector selectorError:(SEL)theSelectorError;
+- (void)logoutByUserTicket:(NSURLRequestCachePolicy)cholicy  delegate:(id)theDelegate selector:(SEL)theSelector selectorError:(SEL)theSelectorError;
 
 /**
  * API:获取个人资料
  *
  * user_id，(可选)，不填则是自己
  */
-- (void)getUserProfile:(NSString*)userID cachePolicy:(NSURLRequestCachePolicy)cholicy  delegate:(id)theDelegate selector:(SEL)theSelector selectorError:(SEL)theSelectorError;
+- (void)getUserProfile:(NSString*)user_id cachePolicy:(NSURLRequestCachePolicy)cholicy  delegate:(id)theDelegate selector:(SEL)theSelector selectorError:(SEL)theSelectorError;
 
 /**
  * API:更新个人资料
  *
- * token，              登录时返回的token
- * visit_password,      可选,访问密码
- * push_on_reply,       可选,是否接收回应推送，0 or 1
- * push_on_like,        可选,是否接收like推送, 0 or 1
- * push_nearby_HNDiscuz, 可选,是否接收附近的悄悄话, 0 or 1
- * longitude,           可选,经度
- * latitude,            可选,纬度
+ * username，            用户名
+ * birthday,            生日
+ * height,              身高
+ * weight,              体重
+ * city,                city城市
+ * favor_tag,           爱好标签
+ * image,               图片墙
  */
-- (void)updateUserProfile:(NSString*)visit_password pushReply:(NSString*)push_on_reply pushLike:(NSString*)push_on_like pushNearbyHNDiscuz:(NSString*)push_nearby_HNDiscuz cachePolicy:(NSURLRequestCachePolicy)cholicy  delegate:(id)theDelegate selector:(SEL)theSelector selectorError:(SEL)theSelectorError;
-
+- (void)updateUserProfile:(NSString*)username birthday:(NSString*)birthday height:(int)height  weight:(int)weight city:(NSString*)city description:(NSString*)description favorTag:(NSString*)favor_tag image:(NSArray*)image_array pushNearbyHNDiscuz:(NSString*)push_nearby_HNDiscuz cachePolicy:(NSURLRequestCachePolicy)cholicy  delegate:(id)theDelegate selector:(SEL)theSelector selectorError:(SEL)theSelectorError;
 
 #pragma mark 悄悄话
 /**
- * API:图片搜索
+ * API:获取附近的人
  *
- * token, 登录时返回的token
- * query, 搜索关键词
+ * token,       登录时返回的token
  * limit
  * offset_id
  */
-- (void)listSearchImage:(NSString*)query limit:(int)limit offsetId:(int)offset_id cachePolicy:(NSURLRequestCachePolicy)cholicy  delegate:(id)theDelegate selector:(SEL)theSelector selectorError:(SEL)theSelectorError;
+- (void)listNearUser:(double)longitude latitude:(double)latitude limit:(int)limit offsetId:(int)offset_id cachePolicy:(NSURLRequestCachePolicy)cholicy  delegate:(id)theDelegate selector:(SEL)theSelector selectorError:(SEL)theSelectorError;
 
 /**
  * API:创建悄悄话

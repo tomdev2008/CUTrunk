@@ -13,12 +13,9 @@
 
 static const float TIME_OUT_INTERVAL = 30.0f;
 
-typedef enum
-{
-    ERROR_CODE_SUCCESS = 0,
-    ERROR_CODE_NORMAL,
-    ERROR_CODE_NEED_AUTH,
-}API_GET_CODE;
+#define STATUS_CODE_SUCCESS  200
+#define STATUS_CODE_NORMAL 500
+#define STATUS_CODE_NEED_AUTH 401
 
 @implementation CURequestSender
 @synthesize progressSelector;
@@ -220,6 +217,7 @@ typedef enum
 
 }
 ///////////////
+//{"status":200,"message":"错误信息","data":{ 实际数据 }}
 - (id)transitionData:(NSData*)data
 {
     NSString *json_string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -230,14 +228,14 @@ typedef enum
     {
         NSDictionary *dict = [json_string JSONValue];
         
-        NSString *code = [dict objectForKey:@"code"];
-        if (code && ERROR_CODE_NEED_AUTH == [code intValue]) {
+        NSString *code = [dict objectForKey:@"status"];
+        if (code && STATUS_CODE_NEED_AUTH == [code intValue]) {
             [[NSNotificationCenter defaultCenter] postNotificationName:AgainLoginNotification object:nil];
-        }else if (code && ERROR_CODE_NORMAL == [code intValue]) {
-            NSError *error = [NSError errorWithDomain:ERROR_DOMAIN code:[code intValue] userInfo:[NSDictionary dictionaryWithObject:[[json_string JSONValue] objectForKey:@"data"] forKey:@"reason"]];
+        }else if (code && STATUS_CODE_NORMAL == [code intValue]) {
+            NSError *error = [NSError errorWithDomain:ERROR_DOMAIN code:[code intValue] userInfo:[NSDictionary dictionaryWithObject:[[json_string JSONValue] objectForKey:@"data"] forKey:@"message"]];
 
             return error;
-        }else if (code && ERROR_CODE_SUCCESS == [code intValue]){
+        }else if (code && STATUS_CODE_SUCCESS == [code intValue]){
             id responseObject = [[json_string JSONValue] objectForKey:@"data"];
             return responseObject;
         }else{

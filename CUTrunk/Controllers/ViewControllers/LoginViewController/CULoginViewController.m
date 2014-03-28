@@ -68,29 +68,30 @@
 {   
     [SVProgressHUD showWithStatus:@"登录中..."];
     NSArray *permissions = [NSArray array];
-    [_tencentOAuth authorize:permissions inSafari:NO];
+    //[_tencentOAuth authorize:permissions inSafari:NO];
 
+     [[CUFileClient sharedInstance] loginUserSystem:@"" password:@""  cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData delegate:self selector:@selector(requestDidFinishLoad:) selectorError:@selector(requestError:)];
 }
 
 #pragma -mark TencentSessionDelegate
-- (void)tencentDidLogin
-{
-    NSLog(@"登录完成");
-    
-
-    if (_tencentOAuth.accessToken && 0 != [_tencentOAuth.accessToken length])
-    {
-        // 记录登录用户的OpenID、Token以及过期时间
-         NSString *idfa = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
-        
-        [[CUFileClient sharedInstance] loginByTencentOpenID:_tencentOAuth.openId qq_token:_tencentOAuth.accessToken device_id:idfa cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData delegate:self selector:@selector(requestDidFinishLoad:) selectorError:@selector(requestError:)];
-    }
-    else
-    {
-        [SVProgressHUD showErrorWithStatus:@"登录失败"];
-        NSLog(@"登录不成功 没有获取accesstoken");
-    }
-}
+//- (void)tencentDidLogin
+//{
+//    NSLog(@"登录完成");
+//    
+//
+//    if (_tencentOAuth.accessToken && 0 != [_tencentOAuth.accessToken length])
+//    {
+//        // 记录登录用户的OpenID、Token以及过期时间
+//         NSString *idfa = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
+//        
+//        [[CUFileClient sharedInstance] loginUserSystem:@"" password:@""  cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData delegate:self selector:@selector(requestDidFinishLoad:) selectorError:@selector(requestError:)];
+//    }
+//    else
+//    {
+//        [SVProgressHUD showErrorWithStatus:@"登录失败"];
+//        NSLog(@"登录不成功 没有获取accesstoken");
+//    }
+//}
 
 - (void)requestDidFinishLoad:(id)data
 {
@@ -125,29 +126,29 @@
     [SVProgressHUD showErrorWithStatus:@"登录失败"];
 
 }
-
-- (void)tencentDidNotLogin:(BOOL)cancelled
-{
-    if (cancelled)
-    {
-        NSLog(@"用户取消登录");
-        [SVProgressHUD dismiss];
-    }
-    else
-    {
-        NSLog(@"登录失败");
-        [self requestError:nil];
-    }
-    
-  
-}
-
-- (void)tencentDidNotNetWork
-{
-    NSLog(@"无网络连接，请设置网络");
-    [SVProgressHUD dismiss];
-
-}
+//
+//- (void)tencentDidNotLogin:(BOOL)cancelled
+//{
+//    if (cancelled)
+//    {
+//        NSLog(@"用户取消登录");
+//        [SVProgressHUD dismiss];
+//    }
+//    else
+//    {
+//        NSLog(@"登录失败");
+//        [self requestError:nil];
+//    }
+//    
+//  
+//}
+//
+//- (void)tencentDidNotNetWork
+//{
+//    NSLog(@"无网络连接，请设置网络");
+//    [SVProgressHUD dismiss];
+//
+//}
 
 #pragma -mark loginSecessed
 

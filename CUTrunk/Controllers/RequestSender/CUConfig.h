@@ -10,8 +10,6 @@
 
 @interface CUConfig : NSObject
 
-- (NSString *)getLoginURL:(NSString*)api;
 - (NSString*)getServerApiUrl:(NSString*)api;
-- (NSString*)getImageFromBaiduURL;
-- (NSString*)getToken;
+- (NSString*)getTicket;
 @end

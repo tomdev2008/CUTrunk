@@ -11,20 +11,14 @@
 
 @implementation CUConfig
 
-- (NSString *)getLoginURL:(NSString*)api
-{
-    return [NSString stringWithFormat:@"http://api.71ao.cn:9900/%@/%@",[self applicationVersion],api];;
-}
-
 - (NSString*)serverURL
 {
-    
-    return [NSString stringWithFormat:@"http://%@:9900/",@"42.96.186.99"];//[[WPUserInfoDto sharedInstance] host]];
+    return @"http://ciao.cuapp.me/";
 }
 
 - (NSString*)applicationVersion
 {
-    return @"1";
+    return @"v1";
 }
 
 - (NSString*)getServerApiUrl:(NSString*)api
@@ -32,16 +26,9 @@
     return [NSString stringWithFormat:@"%@%@/%@",[self serverURL],[self applicationVersion],api];
 }
 
-- (NSString*)getImageFromBaiduURL
-{
-    return @"http://image.baidu.com/i";
-}
-
-- (NSString*)getToken
+- (NSString*)getTicket
 {
     return @"";
-//    NSString *string = [HNUserInfoDto sharedInstance].token;
-//    return (string == nil || [string isEqualToString:@""])?nil:string;
 }
 
 @end
